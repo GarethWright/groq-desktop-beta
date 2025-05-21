@@ -4,6 +4,7 @@ name: Nightly Upstream Sync & Build
 on:
   schedule:
     - cron: '0 0 * * *'   # every night at 00:00 UTC
+  workflow_dispatch:      # allows manual runs
 
 jobs:
   sync-and-build:
@@ -13,7 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0   # fetch all history so we can merge upstream
+          fetch-depth: 0
 
       - name: Configure Git user
         run: |
@@ -31,8 +32,7 @@ jobs:
           git merge --no-edit upstream/main
 
       - name: Push merged changes
-        run: |
-          git push origin main
+        run: git push origin main
 
       - name: Setup Node.js & pnpm cache
         uses: actions/setup-node@v3
@@ -53,5 +53,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: groq-desktop-beta-dist
-          path: |
-            dist/**
+          path: dist/**
